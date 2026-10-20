@@ -1,0 +1,7 @@
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+
+Program received signal SIGSEGV, Segmentation fault.
+bac::ObjectDb::write (this=0x7fffffffde38, oid=..., p=..., vals=..., priority=16 '\020') at /mnt/d/self_projects/bacnet-lite/src/objects.cpp:233
+233	        obj->out_of_service = std::get<bool>(vals[0]);
+Saved corefile /home/chiku/bac-build/crash-core

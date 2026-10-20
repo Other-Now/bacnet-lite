@@ -1,0 +1,17 @@
+# Windows 10.0.26200, 8 logical cpus, MSVC RelWithDebInfo, loopback
+rp w=1 c=1   rps=   9955 p50=    80us p99=    142us failed=0
+rp w=1 c=8   rps=  45427 p50=   110us p99=    326us failed=0
+rp w=1 c=32  rps=  45177 p50=   388us p99=   1195us failed=0
+rp w=1 c=64  rps=  48765 p50=   814us p99=   2077us failed=0
+rp w=2 c=1   rps=   9744 p50=    84us p99=    144us failed=0
+rp w=2 c=8   rps=  37580 p50=   101us p99=    233us failed=0
+rp w=2 c=32  rps=  50799 p50=    88us p99=    310us failed=0
+rp w=2 c=64  rps=  49181 p50=    87us p99=    754us failed=0
+rp w=4 c=1   rps=  10008 p50=    82us p99=    130us failed=0
+rp w=4 c=8   rps=  41057 p50=    90us p99=    156us failed=0
+rp w=4 c=32  rps=  42681 p50=    91us p99=    272us failed=0
+rp w=4 c=64  rps=  41632 p50=    92us p99=    555us failed=0
+cov subs=10    ack_p50=  108us first_p50=   104us all_p50=    225us all_p99=    443us per_notif=13.91us incomplete=0
+cov subs=100   ack_p50=  108us first_p50=   106us all_p50=   1404us all_p99=   6176us per_notif=13.11us incomplete=0
+cov subs=1000  ack_p50=  147us first_p50=   145us all_p50=  14974us all_p99=  29707us per_notif=14.84us incomplete=0
+bl-device stopped requests=7119 rx=7119 dropped=0 rx_errors=0 tx=180279 cov_sent=173160

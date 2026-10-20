@@ -1,0 +1,17 @@
+# 2026-10-20T09:48:31Z Linux 6.18.33.2-microsoft-standard-WSL2 4 cpus,  Intel(R) Core(TM) i5-9300H CPU @ 2.40GHz
+ 09:48:31 up  5:07,  1 user,  load average: 0.70, 1.07, 1.19
+rp w=1 c=1   rps=   6287 p50=   117us p99=    218us failed=0
+rp w=1 c=8   rps=  42372 p50=   114us p99=    355us failed=0
+rp w=1 c=32  rps=  44980 p50=   292us p99=   1278us failed=0
+rp w=1 c=64  rps=  39563 p50=   584us p99=   2753us failed=0
+rp w=2 c=1   rps=   6306 p50=   115us p99=    218us failed=0
+rp w=2 c=8   rps=  42614 p50=   120us p99=    372us failed=0
+rp w=2 c=32  rps=  81877 p50=   198us p99=    928us failed=0
+rp w=2 c=64  rps=  84723 p50=   305us p99=   1804us failed=0
+rp w=4 c=1   rps=   6160 p50=   119us p99=    220us failed=0
+rp w=4 c=8   rps=  36940 p50=   142us p99=    519us failed=0
+rp w=4 c=32  rps=  67759 p50=   253us p99=   1267us failed=0
+rp w=4 c=64  rps=  87819 p50=   358us p99=   1891us failed=0
+cov subs=10    ack_p50=  556us first_p50=    509us all_p50=     614us all_p99=    1247us per_notif=11.67us incomplete=0
+cov subs=100   ack_p50=  306us first_p50=    268us all_p50=     830us all_p99=    3742us per_notif=5.69us incomplete=0
+cov subs=1000  ack_p50=  220us first_p50=    207us all_p50=    6202us all_p99=   10180us per_notif=6.00us incomplete=0

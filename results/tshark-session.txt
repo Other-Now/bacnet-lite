@@ -1,0 +1,17 @@
+APDU                                          frames
+Confirmed-REQ writeProperty                        5
+Confirmed-REQ readProperty                         4
+Simple-ACK writeProperty                           4
+Complex-ACK readProperty                           3
+Confirmed-REQ confirmedCOVNotification             3
+Confirmed-REQ subscribeCOV                         2
+Simple-ACK confirmedCOVNotification                2
+Simple-ACK subscribeCOV                            2
+Unconfirmed-REQ unconfirmedCOVNotification         2
+Complex-ACK readPropertyMultiple                   1
+Confirmed-REQ readPropertyMultiple                 1
+Error readProperty                                 1
+Error writeProperty                                1
+Unconfirmed-REQ i-Am                               1
+Unconfirmed-REQ who-Is                             1
+frames=33 bacnet=33 malformed=0 expert_errors=0

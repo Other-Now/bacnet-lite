@@ -1,0 +1,8 @@
+build*/
+bin/
+obj/
+dumps/
+__pycache__/
+.pytest_cache/
+*.dmp
+/crash-*

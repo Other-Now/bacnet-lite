@@ -1,0 +1,21 @@
+# libFuzzer, clang 20, ASan+UBSan, WSL2 on i5-9300H (4 vCPU), 2026-10-20
+# seeds: UDP payloads recorded from a bl-client session (tools/pcap_to_corpus.py)
+
+## Real code (BL_PLANT_BUG off), 180 s per target
+fuzz_device  (BVLC->NPDU->APDU->service->ObjectDb->reply)  1,496,907 execs  cov 1484  0 crashes
+fuzz_client  (RP-ACK, RPM-ACK, COV notification, I-Am)     5,110,471 execs  cov 523   0 crashes
+(an earlier hypothesis that fuzz_device's exec/s drop came from piling up COV
+subscriptions was checked and was wrong: 77 subscriptions after 400k runs)
+
+## Planted null deref (BL_PLANT_BUG=ON), time-to-find, 300 s cap per trial
+corpus B = session WITH an Out_Of_Service (BOOLEAN) write, 24 seeds
+  trial 1: found by exec ~168      (1 mutation: ChangeBit)
+  trial 2: found by exec ~10,686   (ChangeBinInt)
+  trial 3: found by exec ~3,909    (ChangeBit)
+  trial 4: found by exec ~5,278    (ChangeByte)
+  trial 5: found by exec ~6,793    (CopyPart)
+corpus A = same session WITHOUT the BOOLEAN write, 22 seeds
+  trial 1: found, after >262,144 execs
+  trial 2: NOT found in 301 s / 3,641,835 execs
+  trial 3: found, after >170,273 execs
+("found by exec ~N" = last libFuzzer status line before the crash report)

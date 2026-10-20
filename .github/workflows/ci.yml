@@ -1,0 +1,110 @@
+name: ci
+on: [push, pull_request, workflow_dispatch]
+
+env:
+  BACNET_STACK_TAG: bacnet-stack-1.6.1
+
+jobs:
+  linux:
+    strategy:
+      fail-fast: false
+      matrix:
+        cxx: [g++, clang++]
+    runs-on: ubuntu-24.04
+    defaults: { run: { shell: bash } }
+    steps:
+      - uses: actions/checkout@v4
+      - name: deps
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq ninja-build tshark python3-pytest
+      - name: bacnet-stack demo tools (interop peer)
+        run: |
+          git clone -q --depth 1 --branch $BACNET_STACK_TAG https://github.com/bacnet-stack/bacnet-stack.git ~/bac-deps/bacnet-stack
+          make -s -C ~/bac-deps/bacnet-stack BACDL=bip BUILD=release -j$(nproc) apps > /dev/null
+      - name: build (CMake)
+        run: |
+          cmake -S . -B build -G Ninja -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} -DCMAKE_BUILD_TYPE=RelWithDebInfo
+          cmake --build build
+      - name: build (plain Makefile)
+        run: make -j$(nproc) CXX=${{ matrix.cxx }} && ./bin/unit_tests | tail -1
+      - name: unit tests
+        run: ./build/unit_tests
+      - name: system + interop + tshark tests (real dumpcap on lo alongside)
+        run: |
+          sudo dumpcap -q -i lo -i eth0 -f "udp" -w /tmp/ci-capture.pcapng &
+          sleep 2
+          BL_BIN=build BACNET_STACK_BIN=~/bac-deps/bacnet-stack/bin python3 -m pytest -v tests/system
+          sleep 1; sudo pkill dumpcap; sleep 1
+          sudo chmod a+r /tmp/ci-capture.pcapng
+          perl tools/check_pcap.pl /tmp/ci-capture.pcapng 1024-65535 | tee results-capture.txt
+      - name: benchmark (smoke)
+        run: |
+          ./build/bl-device --port 47808 --no-sim > /dev/null & sleep 0.5
+          ./build/bl-bench rp 127.0.0.1:47808 --requests 20000 --concurrency 1
+          ./build/bl-bench rp 127.0.0.1:47808 --requests 50000 --concurrency 32
+          ./build/bl-bench cov 127.0.0.1:47808 --subs 100 --rounds 50
+          kill %1
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: results-${{ matrix.cxx }}
+          path: |
+            results
+            results-*.txt
+
+  sanitizers-and-fuzz:
+    runs-on: ubuntu-24.04
+    defaults: { run: { shell: bash } }
+    steps:
+      - uses: actions/checkout@v4
+      - name: deps
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ninja-build python3-pytest clang
+      - name: ASan + UBSan build, unit + system tests
+        env: { ASAN_OPTIONS: "detect_leaks=1:halt_on_error=1", UBSAN_OPTIONS: "print_stacktrace=1:halt_on_error=1" }
+        run: |
+          cmake -S . -B asan -G Ninja -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_BUILD_TYPE=Debug -DBL_SANITIZE=ON
+          cmake --build asan
+          ./asan/unit_tests | tail -1
+          BL_BIN=asan python3 -m pytest -q tests/system
+      - name: libFuzzer (2 x 120 s)
+        run: |
+          cmake -S . -B fuzz -G Ninja -DCMAKE_CXX_COMPILER=clang++ -DBL_FUZZ=ON -DBL_SANITIZE=ON
+          cmake --build fuzz
+          mkdir -p corpus-device corpus-client
+          for t in fuzz_device fuzz_client; do
+            ./fuzz/$t -max_total_time=120 -max_len=1500 -print_final_stats=1 corpus-${t#fuzz_} 2>&1 | grep -E "DONE|stat::number_of_executed_units|ERROR|SUMMARY"
+          done
+
+  windows:
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ilammy/msvc-dev-cmd@v1
+      - name: build (MSVC, /W4)
+        run: |
+          cmake -S . -B build -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=RelWithDebInfo
+          cmake --build build
+      - name: unit tests
+        run: build\unit_tests.exe
+      - name: system tests (Winsock)
+        run: |
+          python -m pip install -q pytest
+          $env:BL_BIN = "build"; python -m pytest -v tests/system
+      - name: WSAECONNRESET experiment (ioctl on vs off)
+        run: |
+          cmake -S . -B build-keep -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=RelWithDebInfo -DBL_KEEP_CONNRESET=ON
+          cmake --build build-keep --target bl-device bl-client
+          python tools/connreset_experiment.py build 20
+          python tools/connreset_experiment.py build-keep 20
+      - name: minidump from the planted crash
+        run: |
+          cmake -S . -B build-plant -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=RelWithDebInfo -DBL_PLANT_BUG=ON
+          cmake --build build-plant --target bl-device
+          New-Item -ItemType Directory -Force dumps | Out-Null
+          & build-plant\bl-device.exe --dump-dir dumps --replay docs\crash\crash-input.bin
+          if (-not (Get-ChildItem dumps\*.dmp)) { throw "no minidump written" }
+          Get-ChildItem dumps
+          $global:LASTEXITCODE = 0   # the crash exit code is the expected outcome here

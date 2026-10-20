@@ -1,0 +1,189 @@
+This dump file has an exception of interest stored in it.
+The stored exception information can be accessed via .ecxr
+(56e8.3804): Access violation - code c0000005 (first/second chance not available)
+For analysis of this file, run !analyze -v
+ntdll!NtGetContextThread+0x14:
+00007ffc`7ae43ca4 c3              ret
+0:000> cdb: Reading initial command '!analyze -v; .ecxr; kn 10; .frame 0; dv /t; .frame 1; dv /t; q'
+......................
+*******************************************************************************
+*                                                                             *
+*                        Exception Analysis                                   *
+*                                                                             *
+*******************************************************************************
+KEY_VALUES_STRING: 1
+    Key  : AV.Type
+    Value: Write
+    Key  : Analysis.CPU.mSec
+    Value: 3406
+    Key  : Analysis.Elapsed.mSec
+    Value: 89508
+    Key  : Analysis.IO.Other.Mb
+    Value: 50
+    Key  : Analysis.IO.Read.Mb
+    Value: 1
+    Key  : Analysis.IO.Write.Mb
+    Value: 79
+    Key  : Analysis.Init.CPU.mSec
+    Value: 343
+    Key  : Analysis.Init.Elapsed.mSec
+    Value: 1091
+    Key  : Analysis.Memory.CommitPeak.Mb
+    Value: 99
+    Key  : Analysis.Version.DbgEng
+    Value: 10.0.29661.1004
+    Key  : Analysis.Version.Description
+    Value: 10.2608.26.1 amd64fre
+    Key  : Analysis.Version.Ext
+    Value: 1.2608.26.1
+    Key  : Failure.Bucket
+    Value: INVALID_POINTER_WRITE_c0000005_bl-device-plant.exe!bac::ObjectDb::write
+    Key  : Failure.Exception.Code
+    Value: 0xc0000005
+    Key  : Failure.Exception.IP.Address
+    Value: 0x7ff71a18e0c1
+    Key  : Failure.Exception.IP.Module
+    Value: bl_device_plant
+    Key  : Failure.Exception.IP.Offset
+    Value: 0x4e0c1
+    Key  : Failure.Hash
+    Value: {e33cba07-6d9a-aa62-7165-3d2fa015af93}
+    Key  : Failure.ProblemClass.Primary
+    Value: INVALID_POINTER_WRITE
+    Key  : Faulting.IP.Type
+    Value: Paged
+    Key  : Timeline.OS.Boot.DeltaSec
+    Value: 172313
+    Key  : WER.OS.Branch
+    Value: ge_release
+    Key  : WER.OS.Version
+    Value: 10.0.26100.1
+FILE_IN_CAB:  bl-device-22248.dmp
+APPLICATION_VERIFIER_FLAGS:  0
+CONTEXT:  (.ecxr)
+rax=0000000000000000 rbx=000000109e11fb78 rcx=0000000000000051
+rdx=000001a23e4d70c0 rsi=000000109e11f430 rdi=0002000200000000
+rip=00007ff71a18e0c1 rsp=000000109e11f390 rbp=0000000000000000
+ r8=0000000000000000  r9=000000109e11f470 r10=000001a23e4e0bc0
+r11=000001a23e4dfc40 r12=0000000000000000 r13=000000109e11f460
+r14=000000109e11fb38 r15=0000000000000010
+iopl=0         nv up ei pl zr na pe nc
+cs=0033  ss=002b  ds=002b  es=002b  fs=0053  gs=002b             efl=00010246
+bl_device_plant!bac::ObjectDb::write+0x251:
+00007ff7`1a18e0c1 884570          mov     byte ptr [rbp+70h],al ss:00000000`00000070=??
+Resetting default scope
+EXCEPTION_RECORD:  (.exr -1)
+ExceptionAddress: 00007ff71a18e0c1 (bl_device_plant!bac::ObjectDb::write+0x0000000000000251)
+   ExceptionCode: c0000005 (Access violation)
+  ExceptionFlags: 00000000
+NumberParameters: 2
+   Parameter[0]: 0000000000000001
+   Parameter[1]: 0000000000000070
+Attempt to write to address 0000000000000070
+PROCESS_NAME:  bl-device-plant.exe
+WRITE_ADDRESS:  0000000000000070 
+ERROR_CODE: (NTSTATUS) 0xc0000005 - The instruction at 0x%p referenced memory at 0x%p. The memory could not be %s.
+EXCEPTION_CODE: (NTSTATUS) 0xc0000005 - The instruction at 0x%p referenced memory at 0x%p. The memory could not be %s.
+EXCEPTION_CODE_STR:  c0000005
+EXCEPTION_PARAMETER1:  0000000000000001
+EXCEPTION_PARAMETER2:  0000000000000070
+STACK_TEXT:  
+00000010`9e11f390 00007ff7`1a17d17f     : 00000010`9e11fab0 00000010`9e11f439 00020002`00000000 00000000`00000000 : bl_device_plant!bac::ObjectDb::write+0x251
+00000010`9e11f400 00007ff7`1a17bd0f     : 00000010`9e11f560 00000000`00000014 00000010`9e11fab0 00007ff7`1a154121 : bl_device_plant!bac::Device::handle_write_property+0x12f
+00000010`9e11f4a0 00007ff7`1a16baf5     : 0066bac1`7f000001 00000010`9e11f610 00000000`00000014 00007ff7`1a1503d8 : bl_device_plant!bac::Device::handle+0xff
+(Inline Function) --------`--------     : --------`-------- --------`-------- --------`-------- --------`-------- : bl_device_plant!std::_Func_class<void,bac::Incoming const &>::operator()+0x1b
+00000010`9e11f510 00007ff7`1a150890     : 0066bac1`7f000001 00000000`00000000 00000000`00000004 00000010`9e11f709 : bl_device_plant!bac::Endpoint::process_datagram+0x215
+(Inline Function) --------`--------     : --------`-------- --------`-------- --------`-------- --------`-------- : bl_device_plant!bac::Device::process_datagram+0x11
+00000010`9e11f660 00007ff7`1a15263c     : 00000000`000004d2 00000000`00000001 00000000`0000000f 00000000`00000004 : bl_device_plant!replay+0x330
+00000010`9e11f8a0 00007ff7`1a18ef90     : 000001a2`3e4ca0b0 00000000`00000000 00000000`00000000 000001a2`3e4d8930 : bl_device_plant!main+0xc2c
+(Inline Function) --------`--------     : --------`-------- --------`-------- --------`-------- --------`-------- : bl_device_plant!invoke_main+0x22
+00000010`9e11ff10 00007ffc`7989dda7     : 00000000`00000000 00000000`00000000 00000000`00000000 00000000`00000000 : bl_device_plant!__scrt_common_main_seh+0x10c
+00000010`9e11ff50 00007ffc`7ad5ee4c     : 00000000`00000000 00000000`00000000 000004f0`fffffb30 000004d0`fffffb30 : kernel32!BaseThreadInitThunk+0x17
+00000010`9e11ff80 00000000`00000000     : 00000000`00000000 00000000`00000000 00000000`00000000 00000000`00000000 : ntdll!RtlUserThreadStart+0x2c
+STACK_COMMAND: ~0s; .ecxr ; kb
+IP_IN_PAGED_CODE: 
+bl_device_plant!bac::ObjectDb::write+251 [D:\self_projects\bacnet-lite\src\objects.cpp @ 233]
+00007ff7`1a18e0c1 884570          mov     byte ptr [rbp+70h],al
+FAULTING_SOURCE_LINE:  D:\self_projects\bacnet-lite\src\objects.cpp
+FAULTING_SOURCE_FILE:  D:\self_projects\bacnet-lite\src\objects.cpp
+FAULTING_SOURCE_LINE_NUMBER:  233
+FAULTING_SOURCE_CODE:  
+   229:     // PLANTED BUG (off by default; -DBL_PLANT_BUG=ON) for the crash-dump exercise in
+   230:     // docs/CRASH_ANALYSIS.md: an Out_Of_Service "fast path" that runs before the
+   231:     // unknown-object check, so writing it on a nonexistent object dereferences null.
+   232:     if (p.property == kPropOutOfService && vals.size() == 1 && vals[0].index() == kTagBoolean) {
+>  233:         obj->out_of_service = std::get<bool>(vals[0]);
+   234:         return std::nullopt;
+   235:     }
+   236: #endif
+   237:     if (!obj) return kUnknownObject;
+   238:     Object& o = *obj;
+SYMBOL_NAME:  bl_device_plant!bac::ObjectDb::write+251
+MODULE_NAME: bl_device_plant
+IMAGE_NAME:  bl-device-plant.exe
+FAILURE_BUCKET_ID:  INVALID_POINTER_WRITE_c0000005_bl-device-plant.exe!bac::ObjectDb::write
+OS_VERSION:  10.0.26100.1
+BUILDLAB_STR:  ge_release
+OSPLATFORM_TYPE:  x64
+OSNAME:  Windows 10
+FAILURE_ID_HASH:  {e33cba07-6d9a-aa62-7165-3d2fa015af93}
+Followup:     MachineOwner
+---------
+rax=0000000000000000 rbx=000000109e11fb78 rcx=0000000000000051
+rdx=000001a23e4d70c0 rsi=000000109e11f430 rdi=0002000200000000
+rip=00007ff71a18e0c1 rsp=000000109e11f390 rbp=0000000000000000
+ r8=0000000000000000  r9=000000109e11f470 r10=000001a23e4e0bc0
+r11=000001a23e4dfc40 r12=0000000000000000 r13=000000109e11f460
+r14=000000109e11fb38 r15=0000000000000010
+iopl=0         nv up ei pl zr na pe nc
+cs=0033  ss=002b  ds=002b  es=002b  fs=0053  gs=002b             efl=00010246
+bl_device_plant!bac::ObjectDb::write+0x251:
+00007ff7`1a18e0c1 884570          mov     byte ptr [rbp+70h],al ss:00000000`00000070=??
+ # Child-SP          RetAddr               Call Site
+00 00000010`9e11f390 00007ff7`1a17d17f     bl_device_plant!bac::ObjectDb::write+0x251 [D:\self_projects\bacnet-lite\src\objects.cpp @ 233]
+01 00000010`9e11f400 00007ff7`1a17bd0f     bl_device_plant!bac::Device::handle_write_property+0x12f [D:\self_projects\bacnet-lite\src\device.cpp @ 180]
+02 00000010`9e11f4a0 00007ff7`1a16baf5     bl_device_plant!bac::Device::handle+0xff [D:\self_projects\bacnet-lite\src\device.cpp @ 77]
+03 (Inline Function) --------`--------     bl_device_plant!std::_Func_class<void,bac::Incoming const &>::operator()+0x1b [C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\functional @ 926]
+04 00000010`9e11f510 00007ff7`1a150890     bl_device_plant!bac::Endpoint::process_datagram+0x215 [D:\self_projects\bacnet-lite\src\stack.cpp @ 236]
+05 (Inline Function) --------`--------     bl_device_plant!bac::Device::process_datagram+0x11 [D:\self_projects\bacnet-lite\src\device.hpp @ 26]
+06 00000010`9e11f660 00007ff7`1a15263c     bl_device_plant!replay+0x330 [D:\self_projects\bacnet-lite\apps\bl_device.cpp @ 64]
+07 00000010`9e11f8a0 00007ff7`1a18ef90     bl_device_plant!main+0xc2c [D:\self_projects\bacnet-lite\apps\bl_device.cpp @ 110]
+08 (Inline Function) --------`--------     bl_device_plant!invoke_main+0x22 [D:\a\_work\1\s\src\vctools\crt\vcstartup\src\startup\exe_common.inl @ 78]
+09 00000010`9e11ff10 00007ffc`7989dda7     bl_device_plant!__scrt_common_main_seh+0x10c [D:\a\_work\1\s\src\vctools\crt\vcstartup\src\startup\exe_common.inl @ 288]
+0a 00000010`9e11ff50 00007ffc`7ad5ee4c     kernel32!BaseThreadInitThunk+0x17
+0b 00000010`9e11ff80 00000000`00000000     ntdll!RtlUserThreadStart+0x2c
+00 00000010`9e11f390 00007ff7`1a17d17f     bl_device_plant!bac::ObjectDb::write+0x251 [D:\self_projects\bacnet-lite\src\objects.cpp @ 233]
+class bac::ObjectDb * this = 0x00000010`9e11fb38
+struct bac::ObjectId oid = struct bac::ObjectId
+struct bac::PropertyRef * p = 0x00000010`9e11f460
+class std::vector<std::variant<bac::Null,bool,unsigned int,int,float,double,bac::OctetString,std::basic_string<char,std::char_traits<char>,std::allocator<char> >,bac::BitString,bac::Enumerated,bac::Date,bac::Time,bac::ObjectId>,std::allocator<std::variant<bac::Null,bool,unsigned int,int,float,double,bac::OctetString,std::basic_string<char,std::char_traits<char>,std::allocator<char> >,bac::BitString,bac::Enumerated,bac::Date,bac::Time,bac::ObjectId> > > * vals = 0x00000010`9e11f470 { size=0x1 }
+unsigned char priority = 0x10 ''
+class std::_Tree_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<bac::ObjectId const ,bac::Object> > > > it = <value unavailable>
+class std::lock_guard<std::mutex> lk = locked
+bool known = <value unavailable>
+unsigned int * <begin>$L0 = <value unavailable>
+class std::vector<unsigned int,std::allocator<unsigned int> > bac::kDeviceRequired = <value unavailable>
+struct bac::BacError bac::kBadType = <value unavailable>
+struct bac::BacError bac::kNotAnArray = <value unavailable>
+struct bac::BacError bac::kUnknownObject = <value unavailable>
+struct bac::BacError bac::kUnknownProperty = <value unavailable>
+struct bac::BacError bac::kWriteDenied = <value unavailable>
+struct bac::BacError bac::kOutOfRange = <value unavailable>
+01 00000010`9e11f400 00007ff7`1a17bd0f     bl_device_plant!bac::Device::handle_write_property+0x12f [D:\self_projects\bacnet-lite\src\device.cpp @ 180]
+class bac::Device * this = 0x00000010`9e11fab0
+struct bac::Incoming * in = 0x00000010`9e11f560
+class bac::Reader * r = <value unavailable>
+class bac::Writer w = class bac::Writer
+struct bac::WritePropertyReq req = struct bac::WritePropertyReq
+class std::optional<bac::BacError> e = nullopt
+
+==== frame 1 request (dx) ====
+00007ff7`1a18e0c1 884570          mov     byte ptr [rbp+70h],al ss:00000000`00000070=??
+bl_device_plant!bac::ObjectDb::write+0x251 [D:\self_projects\bacnet-lite\src\objects.cpp @ 233]:
+00007ff7`1a18e0c1 884570          mov     byte ptr [rbp+70h],al
+01 00000010`9e11f400 00007ff7`1a17bd0f     bl_device_plant!bac::Device::handle_write_property+0x12f [D:\self_projects\bacnet-lite\src\device.cpp @ 180]
+req.oid          [Type: bac::ObjectId]
+    [+0x000] type             : 0x0 [Type: unsigned short]
+    [+0x004] instance         : 0x20002 [Type: unsigned int]
+req.prop.property : 0x51 [Type: unsigned int]
+req.values.size() : 0x1 [Type: size_t]

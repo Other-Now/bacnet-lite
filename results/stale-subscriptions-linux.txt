@@ -1,0 +1,12 @@
+== mode: --keep
+run 1 ack 266 first 244 all 7412 us
+run 2 ack 253 first 5470 all 11311 us
+run 3 ack 239 first 10195 all 15373 us
+run 4 ack 246 first 15794 all 21458 us
+bl-device stopped requests=4124 rx=4124 dropped=0 rx_errors=0 tx=318124 cov_sent=314000
+== mode: cancel
+run 1 ack 230 first 216 all 5522 us
+run 2 ack 252 first 213 all 5342 us
+run 3 ack 258 first 220 all 5962 us
+run 4 ack 259 first 216 all 5426 us
+bl-device stopped requests=8124 rx=8124 dropped=0 rx_errors=0 tx=136124 cov_sent=128000
