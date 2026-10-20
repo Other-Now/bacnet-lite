@@ -89,6 +89,10 @@ fourth adds little on 4 vCPUs shared with the client.
 | marginal cost per notification | ~6 µs | ~14 µs |
 | rounds with a missing notification | 0 of 450 | 0 of 450 |
 
+CI smoke benchmark (GitHub ubuntu-24.04 runner, single run, so indicative only):
+ReadProperty 23.7k–27.2k req/s at p50 29–34 µs with 1 outstanding, and
+147k–178k req/s with 32 outstanding; 100-subscription COV fan-out 0.46–0.58 ms.
+
 ## Findings worth talking about
 
 1. **Stale COV subscriptions cost real time.** The first benchmark draft never
@@ -112,7 +116,8 @@ fourth adds little on 4 vCPUs shared with the client.
    broadcasts to its *own* port unless `BACNET_IP_BROADCAST_PORT` is set.
    `bacscov` has no `--mac` at all and needs an `address_cache` file.
 4. **Fuzzing: the corpus matters more than the hours.** Against the real code:
-   1.5M device-path + 5.1M client-decoder executions, 0 crashes. Against a
+   1.5M device-path + 5.1M client-decoder executions locally from recorded
+   seeds, plus 69.5M + 6.3M in CI from an empty corpus: 0 crashes. Against a
    **planted** null dereference (`-DBL_PLANT_BUG=ON`, off by default): found in
    5/5 trials within 168–10.7k executions when the seed session contained one
    Boolean write, but only 2/3 trials, after more than 170k executions, without
