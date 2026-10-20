@@ -21,7 +21,8 @@ jobs:
       - name: bacnet-stack demo tools (interop peer)
         run: |
           git clone -q --depth 1 --branch $BACNET_STACK_TAG https://github.com/bacnet-stack/bacnet-stack.git ~/bac-deps/bacnet-stack
-          make -s -C ~/bac-deps/bacnet-stack BACDL=bip BUILD=release -j$(nproc) apps > /dev/null
+          # its parallel build occasionally links an app before the library is complete
+          make -s -C ~/bac-deps/bacnet-stack BACDL=bip BUILD=release -j$(nproc) apps > /dev/null 2>&1             || make -s -C ~/bac-deps/bacnet-stack BACDL=bip BUILD=release -j1 apps > /dev/null
       - name: build (CMake)
         run: |
           cmake -S . -B build -G Ninja -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} -DCMAKE_BUILD_TYPE=RelWithDebInfo
@@ -32,7 +33,10 @@ jobs:
         run: ./build/unit_tests
       - name: system + interop + tshark tests (real dumpcap on lo alongside)
         run: |
-          sudo dumpcap -q -i lo -i eth0 -f "udp" -w /tmp/ci-capture.pcapng &
+          # dumpcap applies -f to the interface before it; udp[8]=0x81 is the BVLC type octet.
+          # (Unfiltered, lo also shows the ICMP port-unreachables our notifications to exited
+          # subscribers cause -- the same thing Windows reports as WSAECONNRESET.)
+          sudo dumpcap -q -i lo -f "udp[8] = 0x81" -i eth0 -f "udp[8] = 0x81" -w /tmp/ci-capture.pcapng &
           sleep 2
           BL_BIN=build BACNET_STACK_BIN=~/bac-deps/bacnet-stack/bin python3 -m pytest -v tests/system
           sleep 1; sudo pkill dumpcap; sleep 1
