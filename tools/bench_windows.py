@@ -15,7 +15,8 @@ def device(port, workers=2):
 
 def stop(d):
     d.send_signal(signal.CTRL_BREAK_EVENT)
-    return d.communicate(timeout=5)[0].strip()
+    d.wait(timeout=5)
+    return d.stdout.read().strip()
 
 
 def bench(*args):

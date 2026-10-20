@@ -93,7 +93,12 @@ def start_subscriber(addr, obj, *extra):
 
 
 def collect(p):
-    out, _ = p.communicate(timeout=30)
+    # Not communicate(timeout=...): that reads the raw pipe and silently drops lines the
+    # readline() in start_subscriber already pulled into the TextIOWrapper's buffer
+    # (seen in CI as a "missing" initial COV notification). The subscriber exits on its
+    # own after --duration and its output fits in the pipe buffer.
+    p.wait(timeout=30)
+    out = p.stdout.read()
     return [json.loads(l) for l in out.splitlines() if l.startswith("{")]
 
 

@@ -63,12 +63,14 @@ class DeviceProc:
         if self.proc.poll() is None:
             # clean shutdown + stats line: SIGINT, or CTRL_BREAK on Windows
             self.proc.send_signal(signal.CTRL_BREAK_EVENT if sys.platform == "win32" else signal.SIGINT)
+        # wait + read through the same TextIOWrapper the "ready" readline() used;
+        # communicate(timeout=...) would bypass its buffer and could drop lines
         try:
-            out, _ = self.proc.communicate(timeout=5)
+            self.proc.wait(timeout=5)
         except subprocess.TimeoutExpired:
             self.proc.kill()
-            out, _ = self.proc.communicate()
-        return out
+            self.proc.wait()
+        return self.proc.stdout.read()
 
 
 @pytest.fixture

@@ -31,7 +31,8 @@ for i in range(writes):
 elapsed = time.perf_counter() - t0
 r = subprocess.run([cli, "read", a, "av:1", "present-value"], capture_output=True, text=True)
 dev.send_signal(signal.CTRL_BREAK_EVENT if sys.platform == "win32" else signal.SIGINT)
-out = dev.communicate(timeout=5)[0]
+dev.wait(timeout=5)
+out = dev.stdout.read()  # same buffered reader as the readline() above
 m = re.search(r"rx_errors=(\d+)", out)
 print(f"writes ok {ok}/{writes}, final read: {r.stdout.strip()!r}, "
       f"device rx_errors={m.group(1) if m else 'n/a (no stats line)'}, {elapsed:.2f}s")
