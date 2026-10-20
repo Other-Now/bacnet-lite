@@ -23,7 +23,10 @@ jobs:
           git clone -q --depth 1 --branch $BACNET_STACK_TAG https://github.com/bacnet-stack/bacnet-stack.git ~/bac-deps/bacnet-stack
           # its parallel build occasionally links an app against a half-written library;
           # retry from clean, serially
-          make -s -C ~/bac-deps/bacnet-stack BACDL=bip BUILD=release -j$(nproc) apps > /dev/null 2>&1             || { make -s -C ~/bac-deps/bacnet-stack clean > /dev/null 2>&1;                  make -s -C ~/bac-deps/bacnet-stack BACDL=bip BUILD=release -j1 apps > /dev/null; }
+          if ! make -s -C ~/bac-deps/bacnet-stack BACDL=bip BUILD=release -j$(nproc) apps > /dev/null 2>&1; then
+            make -s -C ~/bac-deps/bacnet-stack clean > /dev/null 2>&1
+            make -s -C ~/bac-deps/bacnet-stack BACDL=bip BUILD=release -j1 apps > /dev/null
+          fi
       - name: build (CMake)
         run: |
           cmake -S . -B build -G Ninja -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} -DCMAKE_BUILD_TYPE=RelWithDebInfo
