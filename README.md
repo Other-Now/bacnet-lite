@@ -67,6 +67,7 @@ Raw outputs are in [`results/`](results).
 | bacnet-stack 1.6.1 tools → our device | `bacrp`, `bacwp` (priority write + relinquish), `bacwi` (unicast **and** real broadcast), `bacepics` (full walk), `bacscov` (gets the initial + change notifications) |
 | our client → bacnet-stack `bacserv` | reads an 80-entry object-list, RPM, WriteProperty, COV subscription + notification |
 | Wireshark 4.2.2 (`tools/check_pcap.pl`, Perl) | scripted session of 33 frames (RP, RPM, WP, Error, Who-Is/I-Am, SubscribeCOV, confirmed and unconfirmed COV): **0 malformed, 0 expert errors** |
+| Real `dumpcap` capture of the whole CI suite (incl. bacnet-stack traffic) | 6,216 BVLC frames, **0 malformed, 0 expert errors** (CI run 39408145499) |
 
 **Performance** (`scripts/bench.sh`, `tools/bench_windows.py`; median of 3 runs)
 
